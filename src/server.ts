@@ -38,7 +38,7 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   app.get("/filteredimage", async (req: Request, res: Response) => {
     try {
-      const { imageURL } = req.query;
+      const { image_url: imageURL } = req.query;
       if (!imageURL) {
         return res
           .status(400)
@@ -50,7 +50,10 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
         deleteLocalFiles([localImageURL]);
       });
     } catch (error: any) {
-      res.status(500).json({ error: true, message: error.message });
+      res.status(500).json({
+        error: true,
+        message: `${error.message} - please confirm that the image URL has a valid image`,
+      });
     }
   });
 

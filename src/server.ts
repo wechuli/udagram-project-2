@@ -45,7 +45,10 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
           .json({ error: true, message: "image_url is required" });
       }
       const localImageURL = await filterImageFromURL(image_url as string);
-      return res.status(200).sendFile(localImageURL);
+      res.status(200).sendFile(localImageURL);
+      res.on("finish", () => {
+        deleteLocalFiles([localImageURL]);
+      });
     } catch (error: any) {
       res.status(500).json({ error: true, message: error.message });
     }

@@ -1,6 +1,7 @@
 import express from "express";
 import compress from "compression";
 import morgan from "morgan";
+import { Request, Response } from "express";
 
 import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
@@ -34,6 +35,21 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
   /**************************************************************************** */
 
   //! END @TODO1
+
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    try {
+      const { image_url } = req.query;
+      if (!image_url) {
+        return res
+          .status(400)
+          .json({ error: true, message: "image_url is required" });
+      }
+      const localImageURL = await filterImageFromURL(image_url as string);
+      return res.status(200).sendFile(localImageURL);
+    } catch (error: any) {
+      res.status(500).json({ error: true, message: error.message });
+    }
+  });
 
   // Root Endpoint
   // Displays a simple message to the user
